@@ -1,4 +1,4 @@
-/*
+package org.firstinspires.ftc.teamcode;/*
 Copyright (c) 2016 Robert Atkinson
 
 All rights reserved.
@@ -54,7 +54,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="Template: Iterative OpMode", group="Iterative Opmode")  // @Autonomous(...) is the other common choice
 @Disabled
-public class DriveTest extends OpMode
+public class UserControlled extends OpMode
 {
     /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
