@@ -62,7 +62,7 @@ public class UserControlled extends OpMode
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
     //Xbox-like controller the operator will use
-    private Gamepad manual_controller = null;
+    private Gamepad manual_controller = new Gamepad();
     //speed to drive robot at
     private double driveSpeed = 0.0;
     /*
@@ -86,7 +86,6 @@ public class UserControlled extends OpMode
         // telemetry.addData("Status", "Initialized");
         leftDrive = hardwareMap.dcMotor.get("rear_left_drive_motor");
         rightDrive = hardwareMap.dcMotor.get("rear_right_drive_motor");
-
     }
 
     /*
