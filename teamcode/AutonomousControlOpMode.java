@@ -96,7 +96,10 @@ public class AutonomousControlOpMode extends LinearOpMode {
             telemetry.update();
             try
             {
-                DriveForwardTime(0.4, 3000);
+                DriveForwardTime(0.3, 3000);
+                DriveLeftTime(0.3,3000);
+                DriveRightTime(0.3,3000);
+                DriveBackwardTime(0.3,3000);
             }
             catch(InterruptedException i)
             {
@@ -117,6 +120,71 @@ public class AutonomousControlOpMode extends LinearOpMode {
     public void DriveForwardTime(double power,long time) throws InterruptedException
     {
         DriveForward(power);
+        Thread.sleep(time);
+    }
+    public void DriveLeft(double power)
+    {
+        leftWheelPower = 0.0;
+        rightWheelPower = power;
+
+        leftDrive.setPower(leftWheelPower);
+        rightDrive.setPower(rightWheelPower);
+    }
+    public void DriveLeftTime(double power, long time) throws InterruptedException
+    {
+        DriveLeft(power);
+        Thread.sleep(time);
+    }
+    public void DriveRight(double power)
+    {
+        leftWheelPower = power;
+        rightWheelPower = 0.0;
+
+        leftDrive.setPower(leftWheelPower);
+        rightDrive.setPower(rightWheelPower);
+    }
+    public void DriveRightTime(double power, long time) throws InterruptedException
+    {
+        DriveRight(power);
+        Thread.sleep(time);
+    }
+    public void DriveBackward(double power)
+    {
+        leftWheelPower = -power;
+        rightWheelPower = -power;
+
+        leftDrive.setPower(leftWheelPower);
+        rightDrive.setPower(rightWheelPower);
+    }
+    public void DriveBackwardTime(double power,long time) throws InterruptedException
+    {
+        DriveBackward(power);
+        Thread.sleep(time);
+    }
+    public void TurnLeft(double power)
+    {
+        leftWheelPower = power/2;
+        rightWheelPower = power;
+
+        leftDrive.setPower(leftWheelPower);
+        rightDrive.setPower(rightWheelPower);
+    }
+    public void TurnLeftTime(double power, long time) throws InterruptedException
+    {
+        TurnLeft(power);
+        Thread.sleep(time);
+    }
+    public void TurnRight(double power)
+    {
+        leftWheelPower = power;
+        rightWheelPower = power/2;
+
+        leftDrive.setPower(leftWheelPower);
+        rightDrive.setPower(rightWheelPower);
+    }
+    public void TurnRightTime(double power, long time) throws InterruptedException
+    {
+        TurnRight(power);
         Thread.sleep(time);
     }
 }
