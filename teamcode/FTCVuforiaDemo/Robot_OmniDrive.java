@@ -112,19 +112,22 @@ public class Robot_OmniDrive
     public void moveRobot() {
         // calculate required motor speeds to acheive axis motions
         //double back = driveYaw + driveLateral;
-        double left = driveYaw - driveAxial - (driveLateral * 0.5);
-        double right = driveYaw + driveAxial - (driveLateral * 0.5);
+        double left = driveYaw + driveAxial - (driveLateral * 0.5);
+        double right = driveYaw - driveAxial - (driveLateral * 0.5);
 
         // normalize all motor speeds so no values exceeds 100%.
         //double max = Math.max(Math.abs(back), Math.abs(right));
         //max = Math.max(max, Math.abs(left));
         double max = Math.max(Math.abs(left), Math.abs(right));
-        if (max > 1.0)
+        if (max > 1)
         {
             //back /= max;
             right /= max;
             left /= max;
         }
+
+        right/=2;
+        left/=2;
 
         // Set drive motor power levels.
         //backDrive.setPower(back);
@@ -134,7 +137,7 @@ public class Robot_OmniDrive
         // Display Telemetry
         myOpMode.telemetry.addData("Axes  ", "A[%+5.2f], L[%+5.2f], Y[%+5.2f]", driveAxial, driveLateral, driveYaw);
         //myOpMode.telemetry.addData("Wheels", "L[%+5.2f], R[%+5.2f], B[%+5.2f]", left, right, back);
-        myOpMode.telemetry.addData("Wheels", "L[%+5.2f], R[%+5.2f], B[%+5.2f]", left, right);
+        myOpMode.telemetry.addData("Wheels", "L[%+5.2f], R[%+5.2f]", left, right);
     }
 
 

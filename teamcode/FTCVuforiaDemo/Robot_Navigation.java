@@ -41,8 +41,8 @@ public class Robot_Navigation
 {
     // Constants
     private static final int     MAX_TARGETS    =   4;
-    private static final double  ON_AXIS        =  10;      // Within 1.0 cm of target center-line
-    private static final double  CLOSE_ENOUGH   =  20;      // Within 2.0 cm of final target standoff
+    private static final double  ON_AXIS        =  10;      // Within 5.0 cm of target center-line
+    private static final double  CLOSE_ENOUGH   =  100;      // Within 10.0 cm of final target standoff
 
     // Select which camera you want use.  The FRONT camera is the one on the same side as the screen.  Alt. is BACK
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = VuforiaLocalizer.CameraDirection.BACK;
@@ -112,8 +112,15 @@ public class Robot_Navigation
         // Start tracking any of the defined targets
         if (targets != null)
             targets.activate();
-    }
+}
+    public void activateTrackingTools() {
 
+        // Start tracking any of the defined targets
+        if (targets.get(1)!=null){
+            targets.get(1).getTrackables().activate();
+        }
+
+    }
 
     /***
      * use target position to determine the best way to approach it.
@@ -175,16 +182,17 @@ public class Robot_Navigation
         parameters.useExtendedTracking = false;
         VuforiaLocalizer vuforia = ClassFactory.createVuforiaLocalizer(parameters);
 
+
         /**
          * Load the data sets that for the trackable objects we wish to track.
          * These particular data sets are stored in the 'assets' part of our application
          * They represent the four image targets used in the 2016-17 FTC game.
          */
         targets = vuforia.loadTrackablesFromAsset("FTC_2016-17");
-        targets.get(0).setName("Gears");
-        targets.get(1).setName("Legos");
-        targets.get(2).setName("Tools");
-        targets.get(3).setName("Wheels");
+        targets.get(0).setName("Wheels");//yes
+        targets.get(1).setName("Tools");//yes
+        targets.get(2).setName("Legos");//yes
+        targets.get(3).setName("Gears");//yes
 
         /** For convenience, gather together all the trackable objects in one easily-iterable collection */
         List<VuforiaTrackable> allTrackables = new ArrayList<VuforiaTrackable>();
@@ -223,8 +231,8 @@ public class Robot_Navigation
          */
 
 ///CHANGE THESE VALUES ONCE WE KNOW WHERE THE CAMERA WILL BE RELATIVE TO THE FRONT OF THE ROBOT
-        final int CAMERA_FORWARD_DISPLACEMENT  = 110;   // Camera is 110 mm in front of robot center
-        final int CAMERA_VERTICAL_DISPLACEMENT = 200;   // Camera is 200 mm above ground
+        final int CAMERA_FORWARD_DISPLACEMENT  = 0;   // Camera is 110 mm in front of robot center
+        final int CAMERA_VERTICAL_DISPLACEMENT = 10;   // Camera is 200 mm above ground
         final int CAMERA_LEFT_DISPLACEMENT     = 0;     // Camera is ON the robots center line
 
         OpenGLMatrix phoneLocationOnRobot = OpenGLMatrix

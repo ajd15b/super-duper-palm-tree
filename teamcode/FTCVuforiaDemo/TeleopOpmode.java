@@ -61,7 +61,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp(name="Vuforia Tracking Demo", group="main")
 public class TeleopOpmode extends LinearOpMode {
 
-    final double TARGET_DISTANCE =  400.0;    // Hold robot's center 400 mm from target
+    final double TURN_SPEED = .5;
 
     /* Declare OpMode members. */
     Robot_OmniDrive     robot    = new Robot_OmniDrive();   // Use Omni-Directional drive system
@@ -83,37 +83,128 @@ public class TeleopOpmode extends LinearOpMode {
             telemetry.addData(">", "Press start");
 
             // Display any Nav Targets while we wait for the match to start
-            nav.targetsAreVisible();
+            nav.targetIsVisible(1);
             nav.addNavTelemetry();
             telemetry.update();
         }
 
         // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
+        int step = 0;
+        int lastStep = 7;
+        long lastNotSeen=System.currentTimeMillis();
+        int imageInt = 0;
+        int distance = 100;
+        boolean turnLeft = true;
+        long time;
+        int moveDuration = 1000;
+        while (opModeIsActive() && step<=lastStep) {
 
-            telemetry.addData(">", "Press Left Bumper to track target");
+            //telemetry.addData(">", "Press Left Bumper to track target");
 
             // auto drive or manual drive?
             // In auto drive, the robot will approach any target it can see and then press against it
             // In manual drive the robot responds to the Joystick.
-            if (nav.targetsAreVisible() && gamepad1.left_bumper) {
+            //if (nav.targetsAreVisible() && gamepad1.left_bumper) {
                 // Calculate automatic target approach
-                nav.cruiseControl(TARGET_DISTANCE);
 
-            } else {
-                // Drive the robot using the joysticks
-                robot.manualDrive();
+            //wheels - beacon
+            //lego face lego
+            // turn left
+            //Slam into stick
+            //Gears - beacon
+
+            switch(step)
+            {
+                case 0:
+                    //get off the ramp
+                    step++;
+                    break;
+                case 1:
+                    //go to wheels pic
+                    if(goToPicture(step, imageInt, distance, turnLeft)){
+                        step++;
+                    }
+                    break;
+                case 2:
+                    //press wheels beacon
+                    step++;
+                    break;
+                case 3:
+                    //go to lego picture
+                    imageInt= 2;
+                    distance = 200;
+                    if(goToPicture(step, imageInt, distance,turnLeft)){
+                        step++;
+                    }
+                    break;
+                case 4:
+                    //turn to stick
+                    time = System.currentTimeMillis();
+                    while (System.currentTimeMillis() - time < moveDuration) {
+                        robot.moveRobot(0, 0, TURN_SPEED);
+                    }
+                    step++;
+                    break;
+                case 5:
+                    //drive over stick
+                    time = System.currentTimeMillis();
+                    moveDuration = 5000;
+                    while (System.currentTimeMillis() - time < moveDuration) {
+                        robot.moveRobot(1,0, 0);
+                    }
+                    step++;
+                    break;
+                case 6:
+                    //go to gears picture
+                    turnLeft = false;
+                    imageInt = 3;
+                    distance = 100;
+                    if(goToPicture(step,imageInt,distance,turnLeft)){
+                        step++;
+                    }
+                    break;
+                case 7:
+                    //press gears beacon
+                    step++;
+                    break;
             }
+            nav.addNavTelemetry();
+            telemetry.update();
+
+           // } else {
+                // Drive the robot using the joysticks
+             //   robot.manualDrive();
+            //}
 
             // Build telemetry messages with Navigation Information;
-            nav.addNavTelemetry();
 
-            //  Move the robot according to the pre-determined axis motions
-            robot.moveRobot();
-            telemetry.update();
+
         }
 
         telemetry.addData(">", "Shutting Down. Bye!");
         telemetry.update();
+    }
+
+
+    private boolean goToPicture(int step, int imageInt, int distance, boolean turnLeft) {
+        boolean done=false;
+            if (nav.targetIsVisible(imageInt) ) {
+                done = nav.cruiseControl(distance);
+                if (!done) {
+
+                    //  Move the robot according to the pre-determined axis motions
+                    robot.moveRobot();
+                } else {
+                    robot.moveRobot(0, 0, 0);
+                }
+            } else {
+                if(turnLeft) {
+                    robot.moveRobot(0, 0, TURN_SPEED);
+                }else{
+                    robot.moveRobot(0,0,-TURN_SPEED);
+                }
+                //System.currentTimeMillis();
+            }
+        return done;
     }
 }
