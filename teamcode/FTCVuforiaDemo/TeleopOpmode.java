@@ -34,6 +34,7 @@ package org.firstinspires.ftc.teamcode.FTCVuforiaDemo;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 
 /**
  * This example is designed to show how to identify a target, get the robot's position, and then plan
@@ -64,6 +65,7 @@ public class TeleopOpmode extends LinearOpMode {
     final double TURN_SPEED = .5;
 
     /* Declare OpMode members. */
+    ColorSensor colorSensor;
     Robot_OmniDrive     robot    = new Robot_OmniDrive();   // Use Omni-Directional drive system
     Robot_Navigation    nav      = new Robot_Navigation();  // Use Image Tracking library
 
@@ -126,8 +128,20 @@ public class TeleopOpmode extends LinearOpMode {
                     }
                     break;
                 case 2:
-                    //press wheels beacon
                     step++;
+                    //press wheels beacon
+                    if(colorSensor.red() > 0)
+                    {
+                        //go farther forward and push the button
+                        robot.moveRobot(0,1,0);
+                    }
+                    else if(colorSensor.blue() > 0) {
+                        //robot would need to back up and either go farther to the left or right
+                        robot.moveRobot(0, -1, 0);
+                        robot.moveRobot(1, 1, 0);
+                        //decrement the step to check to see if it sees red now (retry this step)
+                        step--;
+                    }
                     break;
                 case 3:
                     //go to lego picture
