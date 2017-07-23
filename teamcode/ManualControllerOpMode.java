@@ -37,6 +37,7 @@ import android.media.MediaPlayer;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -63,11 +64,20 @@ public class ManualControllerOpMode extends OpMode
     private ElapsedTime runtime = new ElapsedTime();
     DcMotor leftDrive;
     DcMotor rightDrive;
+    DcMotor armLift;
+    CRServo leftClaw;
+    CRServo rightClaw;
+
     double driveSpeed = .5;
+    double liftSpeed = .5;
+    double openSpeed = .5;
+    double closeSpeed = .5;
 
     double leftWheelPower;
     double rightWheelPower;
-
+    double armLiftPower;
+    double clawOpenPower;
+    double clawClosePower;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -82,12 +92,17 @@ public class ManualControllerOpMode extends OpMode
          */
         leftDrive = hardwareMap.dcMotor.get("left_front");
         rightDrive = hardwareMap.dcMotor.get("right_front");
-
+        armLift = hardwareMap.dcMotor.get("arm_lift");
+        leftClaw = hardwareMap.crservo.get("left_claw");
+        rightClaw = hardwareMap.crservo.get("right_claw");
 
         // eg: Set the drive motor directions:
         // Reverse the motor that runs backwards when connected directly to the battery
         leftDrive.setDirection(DcMotor.Direction.FORWARD);
         rightDrive.setDirection(DcMotor.Direction.REVERSE);
+        armLift.setDirection(DcMotor.Direction.FORWARD);
+        leftClaw.setDirection(CRServo.Direction.FORWARD);
+        rightClaw.setDirection(CRServo.Direction.REVERSE);
         //telemetry.addData("Status", "Initialized");
 
     }
@@ -120,8 +135,32 @@ public class ManualControllerOpMode extends OpMode
         leftWheelPower = -gamepad1.left_stick_y;
         rightWheelPower = -gamepad1.right_stick_y;
 
+        if(gamepad1.right_bumper)
+        {
+            armLiftPower = liftSpeed;
+        }
+        else
+        {
+            armLiftPower = 0;
+        }
+
+        clawOpenPower = gamepad1.left_trigger;
+        clawClosePower = -gamepad1.right_trigger;
+
         leftDrive.setPower(leftWheelPower);
         rightDrive.setPower(rightWheelPower);
+        armLift.setPower(armLiftPower);
+
+        if(clawOpenPower > 0)
+        {
+            leftClaw.setPower(clawOpenPower);
+            rightClaw.setPower(clawOpenPower);
+        }
+        else
+        {
+            leftClaw.setPower(clawClosePower);
+            rightClaw.setPower(clawClosePower);
+        }
     }
 
     /*
